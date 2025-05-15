@@ -13,7 +13,7 @@ export const router = createBrowserRouter([
 		children: [
 			{
 				path: ROUTES.BOARDS,
-				lazy: () => import('@/features/board-list/board-list.page'),
+				lazy: () => import('@/features/board-list/view/board-list.page'),
 			},
 			{
 				path: ROUTES.BOARD,
