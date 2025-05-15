@@ -5,7 +5,9 @@ export function App() {
 	return (
 		<div>
 			<AppHeader />
-			<Outlet />
+			<main className='container mx-auto min-h-screen flex flex-col'>
+				<Outlet />
+			</main>
 		</div>
 	)
 }
