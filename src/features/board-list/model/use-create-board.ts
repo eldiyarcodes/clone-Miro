@@ -24,7 +24,7 @@ export const useCreateBoard = () => {
 			}
 		},
 
-		onSettled: () => queryClient.invalidateQueries({ queryKey }),
+		onSettled: async () => await queryClient.invalidateQueries({ queryKey }),
 	})
 
 	const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {

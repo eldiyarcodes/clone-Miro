@@ -7,7 +7,7 @@ export const useDeleteBoard = () => {
 	const { mutate, isPending, variables } = useMutation({
 		mutationFn: boardListApi.deleteBoardById,
 		onSettled: async () =>
-			queryClient.invalidateQueries({ queryKey: [boardListApi.baseKey] }),
+			await queryClient.invalidateQueries({ queryKey: [boardListApi.baseKey] }),
 		onSuccess: async (_, deletedId) => {
 			queryClient.setQueryData(
 				boardListApi.getBoardsQueryOptions().queryKey,
