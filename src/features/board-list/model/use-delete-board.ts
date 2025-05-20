@@ -1,16 +1,18 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { boardListApi } from './board-list.api'
+import { boardListService } from './board-list.service'
 
 export const useDeleteBoard = () => {
 	const queryClient = useQueryClient()
 
 	const { mutate, isPending, variables } = useMutation({
-		mutationFn: boardListApi.deleteBoardById,
+		mutationFn: boardListService.deleteBoardById,
 		onSettled: async () =>
-			await queryClient.invalidateQueries({ queryKey: [boardListApi.baseKey] }),
+			await queryClient.invalidateQueries({
+				queryKey: [boardListService.baseKey],
+			}),
 		onSuccess: async (_, deletedId) => {
 			queryClient.setQueryData(
-				boardListApi.getBoardsQueryOptions().queryKey,
+				boardListService.getBoardsQueryOptions().queryKey,
 				boards =>
 					boards
 						? {

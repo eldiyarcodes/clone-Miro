@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import { boardListApi } from './board-list.api'
+import { boardListService } from './board-list.service'
 
 export const useBoards = () => {
 	const { data, isLoading, error } = useQuery({
-		...boardListApi.getBoardsQueryOptions(),
+		...boardListService.getBoardsQueryOptions(),
 	})
 
 	return {

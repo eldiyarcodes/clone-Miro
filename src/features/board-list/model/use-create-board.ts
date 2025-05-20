@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { boardListApi } from './board-list.api'
+import { boardListService } from './board-list.service'
 
 export const useCreateBoard = () => {
 	const queryClient = useQueryClient()
-	const queryKey = boardListApi.getBoardsQueryOptions().queryKey
+	const queryKey = boardListService.getBoardsQueryOptions().queryKey
 
 	const mutation = useMutation({
 		mutationKey: ['create-board'],
-		mutationFn: boardListApi.createBoard,
+		mutationFn: boardListService.createBoard,
 
 		onMutate: async () => {
 			await queryClient.cancelQueries({ queryKey })
@@ -18,7 +18,7 @@ export const useCreateBoard = () => {
 		onError: (_, __, context) => {
 			if (context?.previousBoards) {
 				queryClient.setQueryData(
-					boardListApi.getBoardsQueryOptions().queryKey,
+					boardListService.getBoardsQueryOptions().queryKey,
 					context.previousBoards
 				)
 			}
