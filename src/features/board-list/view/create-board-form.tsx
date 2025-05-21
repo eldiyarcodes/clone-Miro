@@ -7,7 +7,7 @@ export function CreateBoardForm() {
 	return (
 		<form
 			onSubmit={createBoard.handleCreate}
-			className='flex items-center gap-2 mb-4'
+			className='flex items-center gap-2 mb-10'
 		>
 			<input
 				type='text'
