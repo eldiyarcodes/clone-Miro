@@ -1,5 +1,5 @@
-import { TOKENS } from '@/shared/consts/constants'
 import { ROUTES } from '@/shared/model/routes'
+import { useSession } from '@/shared/model/session'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useNavigate } from 'react-router-dom'
@@ -9,11 +9,12 @@ import type { AuthData } from './types'
 
 export function useLogin() {
 	const navigate = useNavigate()
+	const loginFn = useSession(s => s.login)
 
 	const loginMutation = useMutation({
 		mutationFn: authService.login,
 		onSuccess(data) {
-			localStorage.setItem(TOKENS.ACCESS, data.access_token)
+			loginFn(data.access_token)
 			navigate(ROUTES.HOME)
 		},
 		onError(error) {

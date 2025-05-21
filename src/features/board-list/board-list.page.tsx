@@ -1,6 +1,6 @@
-import { useBoards } from '../model/use-board-list'
-import { BoardCard } from './board-card'
-import { CreateBoardForm } from './create-board-form'
+import { useBoards } from './model/use-board-list'
+import { BoardCard } from './view/board-card'
+import { CreateBoardForm } from './view/create-board-form'
 
 function BoardListPage() {
 	const { boards, isLoading } = useBoards()

@@ -1,4 +1,4 @@
-import { $authApi } from '@/shared/api/axios'
+import { $authApi } from '@/shared/api/instance'
 import { queryOptions } from '@tanstack/react-query'
 import type { BoardResponse } from './board-list.dto'
 
