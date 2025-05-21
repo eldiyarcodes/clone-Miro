@@ -36,7 +36,6 @@ export const useSession = create<SessionStore>((set, get) => {
 		},
 
 		logout() {
-			console.log('logouted')
 			localStorage.removeItem(TOKEN_KEY)
 			set({ token: null, session: null })
 		},
