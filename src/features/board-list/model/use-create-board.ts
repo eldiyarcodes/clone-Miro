@@ -33,7 +33,12 @@ export const useCreateBoard = () => {
 		const name = String(formData.get('name') ?? '').trim()
 		const description = String(formData.get('description') ?? '').trim()
 
-		await mutation.mutateAsync({ name, description })
+		await mutation.mutateAsync({
+			name,
+			description: `${description} description ...`,
+			lastOpenedAt: String(new Date(Date.now()).toISOString()),
+			isFavorite: false,
+		})
 		e.currentTarget.reset()
 	}
 

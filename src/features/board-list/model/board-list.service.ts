@@ -9,7 +9,12 @@ export const boardListService = {
 		return data
 	},
 
-	createBoard: async (board: { name: string; description: string }) => {
+	createBoard: async (board: {
+		name: string
+		description: string
+		lastOpenedAt: string
+		isFavorite: boolean
+	}) => {
 		const { data } = await $authApi.post('boards/create', board)
 		return data
 	},
