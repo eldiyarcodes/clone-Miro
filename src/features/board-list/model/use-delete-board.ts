@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { boardListService } from './board-list.service'
 
 export const useDeleteBoard = () => {
@@ -10,17 +11,8 @@ export const useDeleteBoard = () => {
 			await queryClient.invalidateQueries({
 				queryKey: [boardListService.baseKey],
 			}),
-		onSuccess: async (_, deletedId) => {
-			queryClient.setQueryData(
-				boardListService.getBoardsQueryOptions().queryKey,
-				boards =>
-					boards
-						? {
-								...boards,
-								data: boards.data?.filter(board => board.id !== deletedId),
-						  }
-						: undefined
-			)
+		onSuccess(data) {
+			toast.error(data.message)
 		},
 	})
 

@@ -1,35 +1,35 @@
+import { ROUTES } from '@/shared/model/routes'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { href, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { boardListService } from './board-list.service'
 
 export const useCreateBoard = () => {
+	const navigate = useNavigate()
 	const queryClient = useQueryClient()
-	const queryKey = boardListService.getBoardsQueryOptions().queryKey
 
 	const mutation = useMutation({
 		mutationKey: ['create-board'],
 		mutationFn: boardListService.createBoard,
 
-		onMutate: async () => {
-			await queryClient.cancelQueries({ queryKey })
-			const previousBoards = queryClient.getQueryData(queryKey)
-			return { previousBoards }
+		onSuccess(data) {
+			navigate(href(ROUTES.BOARD, { boardId: data.id }))
+			toast.success('Доска успешно создана')
 		},
 
-		onError: (_, __, context) => {
-			if (context?.previousBoards) {
-				queryClient.setQueryData(
-					boardListService.getBoardsQueryOptions().queryKey,
-					context.previousBoards
-				)
-			}
+		async onSettled() {
+			await queryClient.invalidateQueries({
+				queryKey: [boardListService.baseKey],
+				exact: false,
+			})
 		},
-
-		onSettled: async () => await queryClient.invalidateQueries({ queryKey }),
 	})
 
 	const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		const formData = new FormData(e.currentTarget)
+		const form = e.currentTarget
+
+		const formData = new FormData(form)
 		const name = String(formData.get('name') ?? '').trim()
 		const description = String(formData.get('description') ?? '').trim()
 
@@ -39,12 +39,13 @@ export const useCreateBoard = () => {
 			lastOpenedAt: String(new Date(Date.now()).toISOString()),
 			isFavorite: false,
 		})
-		e.currentTarget.reset()
+
+		form.reset()
 	}
 
 	return {
 		handleCreate,
-		isLoading: mutation.isPending,
+		isPending: mutation.isPending,
 		isError: mutation.isError,
 		error: mutation.error,
 	}

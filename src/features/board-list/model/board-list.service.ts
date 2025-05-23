@@ -1,12 +1,26 @@
 import { $authApi } from '@/shared/api/instance'
-import { queryOptions } from '@tanstack/react-query'
-import type { BoardResponse } from './board-list.dto'
+import type { BoardListParams, BoardResponse } from './board-list.types'
 
 export const boardListService = {
 	baseKey: 'boards',
-	getAllBoards: async ({ signal }: { signal: AbortSignal }) => {
-		const { data } = await $authApi.get<BoardResponse>('boards', { signal })
-		return data
+	getAllBoards: async ({
+		limit,
+		isFavorite,
+		sort,
+		search,
+		page = 1,
+	}: BoardListParams) => {
+		const { data } = await $authApi.get<BoardResponse>('boards', {
+			params: {
+				page,
+				limit,
+				isFavorite,
+				sort,
+				search,
+			},
+		})
+
+		return { data }
 	},
 
 	createBoard: async (board: {
@@ -16,18 +30,28 @@ export const boardListService = {
 		isFavorite: boolean
 	}) => {
 		const { data } = await $authApi.post('boards/create', board)
+
 		return data
 	},
 
 	deleteBoardById: async (id: number) => {
 		const { data } = await $authApi.delete(`boards/${id}`)
+
 		return data
 	},
 
-	getBoardsQueryOptions: () => {
-		return queryOptions({
-			queryKey: [boardListService.baseKey, 'list'],
-			queryFn: meta => boardListService.getAllBoards({ signal: meta.signal }),
+	toggleFavorite: async ({
+		boardId,
+		isFavorite,
+	}: {
+		boardId: number
+		isFavorite: boolean
+	}) => {
+		const { data } = await $authApi.patch(`boards/favorite`, {
+			boardId,
+			isFavorite,
 		})
+
+		return data
 	},
 }

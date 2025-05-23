@@ -19,7 +19,7 @@ export function CreateBoardForm() {
 			<Button
 				type='submit'
 				variant={'default'}
-				disabled={createBoard.isLoading}
+				disabled={createBoard.isPending}
 				className='cursor-pointer'
 			>
 				Create board

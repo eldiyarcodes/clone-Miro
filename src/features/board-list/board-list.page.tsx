@@ -1,3 +1,4 @@
+import { useDebouncedValue } from '@/shared/lib/hooks'
 import { Input } from '@/shared/ui/kit/input'
 import { Label } from '@/shared/ui/kit/label'
 import {
@@ -8,18 +9,20 @@ import {
 	SelectValue,
 } from '@/shared/ui/kit/select'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/kit/tabs'
-import { useState } from 'react'
-import { useBoards } from './model/use-board-list'
+import type { BoardSortOption } from './model/board-list.types'
+import { useBoardFilter } from './model/use-board-filters'
+import { useBoardList } from './model/use-board-list'
 import { BoardCard } from './view/board-card'
 import { CreateBoardForm } from './view/create-board-form'
 
 function BoardListPage() {
-	const [search, setSearch] = useState('')
-	const [sort, setSort] = useState('')
+	const boardFilter = useBoardFilter()
+	const boardListQuery = useBoardList({
+		sort: boardFilter.sort,
+		search: useDebouncedValue(boardFilter.search, 300),
+	})
 
-	const { boards, isLoading } = useBoards()
-
-	if (isLoading) {
+	if (boardListQuery.isPending) {
 		return <h1>LOADING...</h1>
 	}
 
@@ -35,8 +38,8 @@ function BoardListPage() {
 					<Input
 						id='search'
 						placeholder='Введите название доски ...'
-						value={search}
-						onChange={e => setSearch(e.target.value)}
+						value={boardFilter.search}
+						onChange={e => boardFilter.setSearch(e.target.value)}
 						className='w-full'
 					/>
 				</div>
@@ -44,7 +47,12 @@ function BoardListPage() {
 					<Label htmlFor='sort' className='mb-2'>
 						Сортировка
 					</Label>
-					<Select value={sort} onValueChange={value => setSort(value)}>
+					<Select
+						value={boardFilter.sort}
+						onValueChange={value =>
+							boardFilter.setSort(value as BoardSortOption)
+						}
+					>
 						<SelectTrigger id='sort' className='w-full'>
 							<SelectValue placeholder='Сортировка' />
 						</SelectTrigger>
@@ -60,22 +68,28 @@ function BoardListPage() {
 
 			<Tabs defaultValue='all' className='mb-6'>
 				<TabsList>
-					<TabsTrigger value='all' onClick={() => {}}>
-						Все доски
-					</TabsTrigger>
-					<TabsTrigger value='favorites' onClick={() => {}}>
-						Избранные
-					</TabsTrigger>
+					<TabsTrigger value='all'>Все доски</TabsTrigger>
+					<TabsTrigger value='favorites'>Избранные</TabsTrigger>
 				</TabsList>
 			</Tabs>
 
 			<CreateBoardForm />
 
 			<div className='grid grid-cols-3 gap-4'>
-				{boards?.map(board => (
+				{boardListQuery.boards?.map(board => (
 					<BoardCard key={board.id} board={board} />
 				))}
 			</div>
+
+			{boardListQuery.boards?.length === 0 && !boardListQuery.isPending && (
+				<div className='text-center py-8'>Доски не найдены</div>
+			)}
+
+			{boardListQuery.hasNextPage && (
+				<div ref={boardListQuery.cursorRef} className='text-center py-8'>
+					{boardListQuery.isFetchingNextPage && 'Загрузка доп досок'}
+				</div>
+			)}
 		</div>
 	)
 }
