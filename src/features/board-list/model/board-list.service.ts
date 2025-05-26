@@ -40,17 +40,8 @@ export const boardListService = {
 		return data
 	},
 
-	toggleFavorite: async ({
-		boardId,
-		isFavorite,
-	}: {
-		boardId: number
-		isFavorite: boolean
-	}) => {
-		const { data } = await $authApi.patch(`boards/favorite`, {
-			boardId,
-			isFavorite,
-		})
+	toggleFavorite: async (reqData: { boardId: number; isFavorite: boolean }) => {
+		const { data } = await $authApi.patch(`boards/favorite`, reqData)
 
 		return data
 	},

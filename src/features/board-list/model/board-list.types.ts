@@ -27,3 +27,5 @@ export type BoardListParams = {
 	search?: string
 	sort?: BoardSortOption
 }
+
+export type ViewMode = 'list' | 'cards'

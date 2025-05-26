@@ -25,22 +25,13 @@ export const useCreateBoard = () => {
 		},
 	})
 
-	const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		const form = e.currentTarget
-
-		const formData = new FormData(form)
-		const name = String(formData.get('name') ?? '').trim()
-		const description = String(formData.get('description') ?? '').trim()
-
+	const handleCreate = async () => {
 		await mutation.mutateAsync({
-			name,
-			description: `${description} description ...`,
+			name: 'board name',
+			description: `description ...`,
 			lastOpenedAt: String(new Date(Date.now()).toISOString()),
 			isFavorite: false,
 		})
-
-		form.reset()
 	}
 
 	return {

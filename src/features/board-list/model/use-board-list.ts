@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
 import { useCallback, type RefCallback } from 'react'
 import { boardListService } from './board-list.service'
 import type { BoardListParams } from './board-list.types'
@@ -25,6 +25,7 @@ export const useBoardList = ({
 				Number(lastPageParams) < lastPage.data.totalPages
 					? Number(lastPageParams) + 1
 					: null,
+			placeholderData: keepPreviousData,
 		})
 
 	const cursorRef: RefCallback<HTMLDivElement> = useCallback(
